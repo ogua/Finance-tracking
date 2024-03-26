@@ -25,6 +25,15 @@ class UserResource extends Resource
     protected static ?string $modelLabel = 'User';
     protected static ?int $navigationSort = 1;
     
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (isset(auth()->user()->role) && auth()->user()->role == "Normal User") {
+            return false;
+        }
+        
+        return true;
+    }
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -42,68 +51,77 @@ class UserResource extends Resource
                 ->email()
                 ->required()
                 ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                ->password()
-                ->required()
-                ->maxLength(255),
-                ])
-                ->columns(2),
-            ]);
-        }
-        
-        public static function table(Table $table): Table
-        {
-            return $table
-            ->columns([
-                Tables\Columns\ImageColumn::make('avatar_url')
-                ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                ->dateTime()
-                ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-                ])
-                ->filters([
-                    //
+                Forms\Components\Select::make('role')
+                ->options([
+                    'Super Admin' => 'Super Admin',
+                    'Normal User' => 'Normal User',
                     ])
-                    ->actions([
-                        Tables\Actions\ViewAction::make(),
-                        Tables\Actions\EditAction::make(),
-                        Tables\Actions\DeleteAction::make(),
+                    ->required(fn(string $operation) => $operation == 'create'),
+                    Forms\Components\DateTimePicker::make('email_verified_at'),
+                    Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->hiddenOn('edit')
+                    ->maxLength(255),
+                    ])
+                    ->columns(2),
+                ]);
+            }
+            
+            public static function table(Table $table): Table
+            {
+                return $table
+                ->columns([
+                    Tables\Columns\ImageColumn::make('avatar_url')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('role')
+                    ->searchable(),
+                    Tables\Columns\TextColumn::make('email_verified_at')
+                    ->dateTime()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    ])
+                    ->filters([
+                        //
                         ])
-                        ->bulkActions([
-                            Tables\Actions\BulkActionGroup::make([
-                                Tables\Actions\DeleteBulkAction::make(),
-                            ]),
-                        ]);
+                        ->actions([
+                            Tables\Actions\ViewAction::make(),
+                            Tables\Actions\EditAction::make(),
+                            Tables\Actions\DeleteAction::make(),
+                            ])
+                            ->bulkActions([
+                                Tables\Actions\BulkActionGroup::make([
+                                    Tables\Actions\DeleteBulkAction::make(),
+                                ]),
+                            ]);
+                        }
+                        
+                        public static function getRelations(): array
+                        {
+                            return [
+                                //
+                            ];
+                        }
+                        
+                        public static function getPages(): array
+                        {
+                            return [
+                                'index' => Pages\ListUsers::route('/'),
+                                //'create' => Pages\CreateUser::route('/create'),
+                                'view' => Pages\ViewUser::route('/{record}'),
+                                //'edit' => Pages\EditUser::route('/{record}/edit'),
+                            ];
+                        }
                     }
                     
-                    public static function getRelations(): array
-                    {
-                        return [
-                            //
-                        ];
-                    }
-                    
-                    public static function getPages(): array
-                    {
-                        return [
-                            'index' => Pages\ListUsers::route('/'),
-                            'create' => Pages\CreateUser::route('/create'),
-                            'view' => Pages\ViewUser::route('/{record}'),
-                            'edit' => Pages\EditUser::route('/{record}/edit'),
-                        ];
-                    }
-                }
-                

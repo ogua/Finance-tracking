@@ -42,9 +42,8 @@ class Reportpage extends Page
     {
         
         $data = $this->form->getState();
-        //logger($data);
         
-        return redirect()->to('/report');
+        return redirect()->to("/report-detials/{$data['from_date']}/{$data['to_date']}/{$data['report_type']}");
         
         //$this->getSavedNotification()->send();
     }

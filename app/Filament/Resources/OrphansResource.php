@@ -133,9 +133,9 @@ class OrphansResource extends Resource
                     {
                         return [
                             'index' => Pages\ListOrphans::route('/'),
-                            'create' => Pages\CreateOrphans::route('/create'),
+                            //'create' => Pages\CreateOrphans::route('/create'),
                             'view' => Pages\ViewOrphans::route('/{record}'),
-                            'edit' => Pages\EditOrphans::route('/{record}/edit'),
+                            //'edit' => Pages\EditOrphans::route('/{record}/edit'),
                         ];
                     }
                 }

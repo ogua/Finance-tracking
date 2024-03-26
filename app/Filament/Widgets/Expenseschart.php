@@ -30,7 +30,7 @@ class Expenseschart extends ChartWidget
             return [
                 'datasets' => [
                     [
-                        'label' => 'Orphans Trends',
+                        'label' => 'Expenses Trends',
                         'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     ],
                 ],
@@ -40,7 +40,7 @@ class Expenseschart extends ChartWidget
         
         protected function getType(): string
         {
-            return 'doughnut';
+            return 'line';
         }
     }
     
