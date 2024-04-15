@@ -5,7 +5,7 @@
       <x-filament::input.wrapper>
           <x-filament::input.select x-model="report_type">
               <option value="">Report Type</option>
-               <option value="Orphan">Orphan</option>
+              <option value="Orphan">Orphan</option>
               <option value="Donations">Donations</option>
               <option value="Expenses">Expenses</option>
           </x-filament::input.select>
